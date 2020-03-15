@@ -1,0 +1,61 @@
+[
+  {
+    "title": "",
+    "properties": [
+      {
+        "name" : "id",
+        "label" : "@@qrCode.id@@",
+        "type" : "hidden"
+      },
+      {
+        "name" : "customId",
+        "label" : "@@qrCode.customId@@",
+        "type" : "textfield",
+        "regex_validation" : "^[a-zA-Z0-9_]+$",
+        "validation_message" : "@@qrCode.invalidId@@"
+      },
+      {
+        "name" : "label",
+        "label" : "@@qrCode.label@@",
+        "type" : "textfield",
+        "required" : "true",
+        "value" : "@@qrCode.label.authTokenQr@@"
+      },
+      {
+        "name": "height",
+        "label": "@@qrCode.height@@",
+        "type": "textfield",
+        "value" : "350",
+        "required": "true"
+      },
+      {
+        "name": "width",
+        "label": "@@qrCode.width@@",
+        "type": "textfield",
+        "value" : "350",
+        "required": "true"
+      },
+      {
+        "name": "hostUrl",
+        "label": "@@qrCode.hostUrl@@",
+        "type": "textfield",
+        "required": "true"
+      },
+      {
+        "name" : "orgId",
+        "label" : "@@qrCode.orgId@@",
+        "type" : "selectbox",
+        "options_ajax" : "[CONTEXT_PATH]/web/json/plugin/org.joget.apps.userview.lib.UserPermission/service?action=getOrgs"
+      },
+      {
+        "name" : "username",
+        "label" : "@@qrCode.username@@",
+        "type" : "selectbox",
+        "size" : "10",
+        "options_ajax_on_change" : "orgId",
+        "options_ajax" : "[CONTEXT_PATH]/web/json/plugin/org.joget.apps.userview.lib.UserPermission/service?action=getUsers"
+      }
+    ]
+  }
+
+]
