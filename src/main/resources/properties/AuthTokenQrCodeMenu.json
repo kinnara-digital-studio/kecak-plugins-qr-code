@@ -1,6 +1,6 @@
 [
   {
-    "title": "",
+    "title": "@@qrCode.authTokenQrCode@@",
     "properties": [
       {
         "name" : "id",
@@ -20,21 +20,12 @@
         "type" : "textfield",
         "required" : "true",
         "value" : "@@qrCode.label.authTokenQr@@"
-      },
-      {
-        "name": "height",
-        "label": "@@qrCode.height@@",
-        "type": "textfield",
-        "value" : "350",
-        "required": "true"
-      },
-      {
-        "name": "width",
-        "label": "@@qrCode.width@@",
-        "type": "textfield",
-        "value" : "350",
-        "required": "true"
-      },
+      }
+    ]
+  },
+  {
+    "title": "@@qrCode.data@@",
+    "properties": [
       {
         "name": "hostUrl",
         "label": "@@qrCode.hostUrl@@",
@@ -54,6 +45,25 @@
         "size" : "10",
         "options_ajax_on_change" : "orgId",
         "options_ajax" : "[CONTEXT_PATH]/web/json/plugin/org.joget.apps.userview.lib.UserPermission/service?action=getUsers"
+      }
+    ]
+  },
+  {
+    "title": "@@qrCode.ui@@",
+    "properties": [
+      {
+        "name": "height",
+        "label": "@@qrCode.height@@",
+        "type": "textfield",
+        "value" : "350",
+        "required": "true"
+      },
+      {
+        "name": "width",
+        "label": "@@qrCode.width@@",
+        "type": "textfield",
+        "value" : "350",
+        "required": "true"
       }
     ]
   }
