@@ -33,10 +33,25 @@
         "required": "true"
       },
       {
+        "name" : "currentUser",
+        "label" : "@@qrCode.currentUser@@",
+        "type": "checkbox",
+        "value" : "true",
+        "options" : [
+          {
+            "value" : "true",
+            "label" : ""
+          }
+        ]
+      },
+      {
         "name" : "orgId",
         "label" : "@@qrCode.orgId@@",
         "type" : "selectbox",
-        "options_ajax" : "[CONTEXT_PATH]/web/json/plugin/org.joget.apps.userview.lib.UserPermission/service?action=getOrgs"
+        "options_ajax" : "[CONTEXT_PATH]/web/json/plugin/org.joget.apps.userview.lib.UserPermission/service?action=getOrgs",
+        "control_field" : "currentUser",
+        "control_value" : "^$",
+        "control_use_regex": "true"
       },
       {
         "name" : "username",
@@ -44,7 +59,10 @@
         "type" : "selectbox",
         "size" : "10",
         "options_ajax_on_change" : "orgId",
-        "options_ajax" : "[CONTEXT_PATH]/web/json/plugin/org.joget.apps.userview.lib.UserPermission/service?action=getUsers"
+        "options_ajax" : "[CONTEXT_PATH]/web/json/plugin/org.joget.apps.userview.lib.UserPermission/service?action=getUsers",
+        "control_field" : "currentUser",
+        "control_value" : "^$",
+        "control_use_regex": "true"
       }
     ]
   },

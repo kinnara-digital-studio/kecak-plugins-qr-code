@@ -9,6 +9,7 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.app.service.AuthTokenService;
 import org.joget.apps.userview.model.UserviewMenu;
 import org.joget.commons.util.LogUtil;
+import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.ApplicationContext;
@@ -35,7 +36,7 @@ public class AuthTokenQrCodeMenu extends UserviewMenu {
 
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         String hostUrl = AppUtil.processHashVariable(getPropertyString("hostUrl"), null, null, null);
-        String username = AppUtil.processHashVariable(getPropertyString("username"), null, null, null);
+        String username = getPropertyCurrentUser() ? WorkflowUtil.getCurrentUsername() : AppUtil.processHashVariable(getPropertyString("username"), null, null, null);
 
         try {
             JSONObject jsonContent = new JSONObject();
@@ -46,6 +47,9 @@ public class AuthTokenQrCodeMenu extends UserviewMenu {
             MatrixToImageWriter.writeToStream(bitMatrix, "PNG", outputStream);
 
             byte[] encoded = Base64.getEncoder().encode(outputStream.toByteArray());
+
+            LogUtil.info(getClassName(), "Generating authentication QR for [" + username + "]");
+
             String html = "<img src='data:image/png;base64," + new String(encoded) + "'>";
             return html;
         } catch (WriterException | IOException | NumberFormatException | JSONException e) {
@@ -93,5 +97,15 @@ public class AuthTokenQrCodeMenu extends UserviewMenu {
     @Override
     public String getPropertyOptions() {
         return AppUtil.readPluginResource(getClassName(), "/properties/AuthTokenQrCodeMenu.json", null, false, "/messages/QrCode");
+    }
+
+
+    /**
+     * Get property "currentUser"
+     *
+     * @return
+     */
+    private boolean getPropertyCurrentUser() {
+        return "true".equalsIgnoreCase(getPropertyString("currentUser"));
     }
 }
