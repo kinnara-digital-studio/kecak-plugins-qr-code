@@ -5,10 +5,13 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.kinnara.kecakplugins.qrcode.util.QrGenerator;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.app.service.AuthTokenService;
 import org.joget.apps.userview.model.UserviewMenu;
 import org.joget.commons.util.LogUtil;
+import org.joget.directory.model.User;
+import org.joget.directory.model.service.DirectoryManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,7 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 
-public class AuthTokenQrCodeMenu extends UserviewMenu {
+public class AuthTokenQrCodeMenu extends UserviewMenu implements QrGenerator {
     @Override
     public String getCategory() {
         return "Kecak";
@@ -34,7 +37,6 @@ public class AuthTokenQrCodeMenu extends UserviewMenu {
         ApplicationContext applicationContext = AppUtil.getApplicationContext();
         AuthTokenService authTokenService = (AuthTokenService) applicationContext.getBean("authTokenService");
 
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
         String hostUrl = AppUtil.processHashVariable(getPropertyString("hostUrl"), null, null, null);
         String username = getPropertyCurrentUser() ? WorkflowUtil.getCurrentUsername() : AppUtil.processHashVariable(getPropertyString("username"), null, null, null);
 
@@ -42,9 +44,12 @@ public class AuthTokenQrCodeMenu extends UserviewMenu {
             JSONObject jsonContent = new JSONObject();
             jsonContent.put("host", hostUrl);
             jsonContent.put("token", authTokenService.generateToken(username));
-            BitMatrix bitMatrix = qrCodeWriter.encode(jsonContent.toString(), BarcodeFormat.QR_CODE, Integer.parseInt(getPropertyString("width")), Integer.parseInt(getPropertyString("height")));
+
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            MatrixToImageWriter.writeToStream(bitMatrix, "PNG", outputStream);
+
+            int width = Integer.parseInt(getPropertyString("width"));
+            int height = Integer.parseInt(getPropertyString("height"));
+            writeQrCodeToStream(jsonContent.toString(), width, height, outputStream);
 
             byte[] encoded = Base64.getEncoder().encode(outputStream.toByteArray());
 

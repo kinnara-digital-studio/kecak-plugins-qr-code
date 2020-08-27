@@ -1,19 +1,32 @@
 package com.kinnara.kecakplugins.qrcode;
 
-import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
+import com.kinnara.kecakplugins.qrcode.exception.RestApiException;
+import com.kinnara.kecakplugins.qrcode.util.QrGenerator;
+import com.kinnara.kecakplugins.qrcode.util.Unclutter;
+import org.joget.apps.app.dao.UserviewDefinitionDao;
+import org.joget.apps.app.model.AppDefinition;
+import org.joget.apps.app.model.UserviewDefinition;
 import org.joget.apps.app.service.AppUtil;
+import org.joget.apps.userview.model.Userview;
+import org.joget.apps.userview.model.UserviewCategory;
 import org.joget.apps.userview.model.UserviewMenu;
+import org.joget.apps.userview.service.UserviewService;
 import org.joget.commons.util.LogUtil;
+import org.joget.plugin.base.PluginWebSupport;
+import org.springframework.context.ApplicationContext;
 
-import java.io.ByteArrayOutputStream;
+import javax.annotation.Nonnull;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Base64;
+import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
 
-public class QrCodeMenu extends UserviewMenu {
+public class QrCodeMenu extends UserviewMenu implements PluginWebSupport, QrGenerator, Unclutter {
     @Override
     public String getCategory() {
         return "Kecak";
@@ -26,22 +39,10 @@ public class QrCodeMenu extends UserviewMenu {
 
     @Override
     public String getRenderPage() {
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        String content = AppUtil.processHashVariable(getPropertyString("content"), null, null, null);
-
-        try {
-            BitMatrix bitMatrix = qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, Integer.parseInt(getPropertyString("width")), Integer.parseInt(getPropertyString("height")));
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            MatrixToImageWriter.writeToStream(bitMatrix, "PNG", outputStream);
-
-            byte[] encoded = Base64.getEncoder().encode(outputStream.toByteArray());
-            String html = "<img src='data:image/png;base64," + new String(encoded) + "'>";
-            return html;
-        } catch (WriterException | IOException | NumberFormatException e) {
-            LogUtil.error(getClassName(), e, e.getMessage());
-        }
-
-        return null;
+        AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
+        Userview userview = getUserview();
+        String html = "<img src='/web/json/app/" + appDefinition.getAppId() + "/" + appDefinition.getVersion() + "/plugin/" + getClassName() + "/service?userview=" + userview.getPropertyString("id") + "&menu=" + getPropertyString("customId") + "'";
+        return html;
     }
 
     @Override
@@ -82,5 +83,66 @@ public class QrCodeMenu extends UserviewMenu {
     @Override
     public String getPropertyOptions() {
         return AppUtil.readPluginResource(getClassName(), "/properties/QrCodeMenu.json", null, false, "/messages/QrCode");
+    }
+
+    @Override
+    public void webService(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
+        try {
+            AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
+            String userviewId = getRequiredParameter(httpServletRequest, "userview");
+            String menuId = getRequiredParameter(httpServletRequest, "menu");
+            Userview userview = generateUserview(httpServletRequest, appDefinition, userviewId, menuId);
+            UserviewMenu menu = getUserviewMenu(userview, menuId);
+            try {
+                httpServletResponse.setContentType("image/png");
+                OutputStream outputStream = httpServletResponse.getOutputStream();
+                writeQrCodeMenuToStream(menu, outputStream);
+            } catch (WriterException e) {
+                throw new RestApiException(e);
+            }
+        } catch (RestApiException e) {
+            LogUtil.error(getClassName(), e, e.getMessage());
+            httpServletResponse.sendError(e.getErrorCode(), e.getMessage());
+        }
+    }
+
+    private String getRequiredParameter(HttpServletRequest request, String parameterName) throws RestApiException {
+        return Optional.of(parameterName)
+                .map(request::getParameter)
+                .orElseThrow(() -> new RestApiException(HttpServletResponse.SC_BAD_REQUEST, "Parameter ["+parameterName+" is not supplied]"));
+    }
+
+    private String getOptionalParameter(HttpServletRequest request, String parameterName, String defaultValue) {
+        return Optional.of(parameterName)
+                .map(request::getParameter)
+                .orElse(defaultValue);
+    }
+
+    private Userview generateUserview(HttpServletRequest request, AppDefinition appDefinition, String userviewId, String menuId) throws RestApiException {
+        ApplicationContext applicationContext = AppUtil.getApplicationContext();
+        UserviewDefinitionDao userviewDefinitionDao = (UserviewDefinitionDao) applicationContext.getBean("userviewDefinitionDao");
+        UserviewService userviewService = (UserviewService) applicationContext.getBean("userviewService");
+
+        return Optional.ofNullable(userviewDefinitionDao.loadById(userviewId, appDefinition))
+                .map(UserviewDefinition::getJson)
+                .map(s -> userviewService.createUserview(s, menuId, false, AppUtil.getRequestContextPath(), request.getParameterMap(), null, false))
+                .orElseThrow(() -> new RestApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating userview [" + userviewId + "] menu ["+ menuId + "]"));
+    }
+
+    private UserviewMenu getUserviewMenu(@Nonnull  Userview userview, @Nonnull String menuId) throws RestApiException {
+        return Optional.of(userview)
+                .map(Userview::getCategories)
+                .map(Collection::stream)
+                .orElseThrow(() -> new RestApiException(HttpServletResponse.SC_BAD_REQUEST, "Userview category not found"))
+                .map(UserviewCategory::getMenus)
+                .filter(Objects::nonNull)
+                .flatMap(Collection::stream)
+                .filter(menu -> Optional.of("customId")
+                        .map(menu::getProperty)
+                        .map(String::valueOf)
+                        .map(menuId::equals)
+                        .orElse(false))
+                .findFirst()
+                .orElseThrow(() -> new RestApiException(HttpServletResponse.SC_BAD_REQUEST, "Userview menu not found"));
     }
 }

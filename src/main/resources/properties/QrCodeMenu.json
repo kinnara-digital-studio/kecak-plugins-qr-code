@@ -12,6 +12,7 @@
         "label" : "@@qrCode.customId@@",
         "type" : "textfield",
         "regex_validation" : "^[a-zA-Z0-9_]+$",
+        "required": "true",
         "validation_message" : "@@qrCode.invalidId@@"
       },
       {
