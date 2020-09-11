@@ -5,7 +5,6 @@ import com.kinnara.kecakplugins.qrcode.exception.RestApiException;
 import com.kinnara.kecakplugins.qrcode.util.QrGenerator;
 import com.kinnara.kecakplugins.qrcode.util.Unclutter;
 import org.joget.apps.app.model.AppDefinition;
-import org.joget.apps.app.model.PackageDefinition;
 import org.joget.apps.app.model.PluginDefaultProperties;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.commons.util.LogUtil;
