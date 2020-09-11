@@ -16,6 +16,7 @@ public class Activator implements BundleActivator {
         //Register plugin here
         registrationList.add(context.registerService(AuthTokenQrCodeMenu.class.getName(), new AuthTokenQrCodeMenu(), null));
         registrationList.add(context.registerService(QrCodeMenu.class.getName(), new QrCodeMenu(), null));
+        registrationList.add(context.registerService(QrCodeSignature.class.getName(), new QrCodeSignature(), null));
     }
 
     public void stop(BundleContext context) {
