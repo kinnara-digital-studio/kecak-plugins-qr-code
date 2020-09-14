@@ -40,7 +40,7 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
 
     @Override
     public String getName() {
-        return "QR Code Signature";
+        return getLabel() + getVersion();
     }
 
     @Override
@@ -55,7 +55,7 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
 
     @Override
     public String getLabel() {
-        return getName();
+        return "QR Code Signature";
     }
 
     @Override
@@ -175,7 +175,6 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
                 .orElseGet(Stream::empty)
                 .filter(this::isNotEmpty)
                 .map(s -> AppUtil.processHashVariable(s, null, null, null))
-                .peek(s -> LogUtil.info(getClassName(), "getWorkflowVariables : ["+s+"]"))
                 .collect(Collectors.toList());
     }
 
@@ -225,8 +224,7 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
                         .map(WorkflowVariable::getName)
                         .map(workflowVariables::contains)
                         .orElse(false))
-                .findAny()
-                .ifPresent(throwableConsumer(v -> jsonContent.put(v.getName(), v.getVal())));
+                .forEach(throwableConsumer(v -> jsonContent.put(v.getName(), v.getVal())));
 
         try {
             String content = host + "/web/json/app/" + appId + "/" + appVersion + "/plugin/" + QrCodeSignature.class.getName() + "/service?action=verify&data=" + URLEncoder.encode(SecurityUtil.encrypt(jsonContent.toString()), "UTF-8");

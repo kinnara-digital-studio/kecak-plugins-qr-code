@@ -57,7 +57,7 @@ public class QrCodeMenu extends UserviewMenu implements PluginWebSupport, QrGene
 
     @Override
     public String getName() {
-        return "QR Code";
+        return getLabel() + getVersion();
     }
 
     @Override
@@ -72,7 +72,7 @@ public class QrCodeMenu extends UserviewMenu implements PluginWebSupport, QrGene
 
     @Override
     public String getLabel() {
-        return getName();
+        return "QR Code";
     }
 
     @Override
