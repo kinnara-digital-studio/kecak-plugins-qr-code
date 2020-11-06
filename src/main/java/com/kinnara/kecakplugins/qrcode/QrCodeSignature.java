@@ -4,6 +4,7 @@ import com.google.zxing.WriterException;
 import com.kinnara.kecakplugins.qrcode.exception.RestApiException;
 import com.kinnara.kecakplugins.qrcode.util.QrGenerator;
 import com.kinnara.kecakplugins.qrcode.util.Unclutter;
+import org.joda.time.DateTime;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.PluginDefaultProperties;
 import org.joget.apps.app.service.AppUtil;
@@ -17,6 +18,7 @@ import org.joget.workflow.model.WorkflowProcess;
 import org.joget.workflow.model.WorkflowVariable;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.ApplicationContext;
 
@@ -190,9 +192,6 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
         ApplicationContext applicationContext = AppUtil.getApplicationContext();
         WorkflowManager workflowManager = (WorkflowManager) applicationContext.getBean("workflowManager");
 
-        String activityId = getRequiredParameter(request, "activityId");
-        WorkflowActivity info = workflowManager.getRunningActivityInfo(activityId);
-
         int width = Integer.parseInt(getOptionalParameter(request, "width", "256"));
         int height = Integer.parseInt(getOptionalParameter(request, "height", "256"));
 
@@ -201,7 +200,15 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
         long appVersion = appDefinition.getVersion();
 
         JSONObject jsonContent = new JSONObject();
+        try {
+            jsonContent.put("qrTimestamp", new Date());
+        } catch (JSONException e) {
+            LogUtil.error(getClassName(), e, e.getMessage());
+        }
 
+        String activityId = getRequiredParameter(request, "activityId");
+
+        WorkflowActivity info = workflowManager.getRunningActivityInfo(activityId);
         if(info != null) {
             getActivityProperties()
                     .stream()
@@ -212,7 +219,10 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
                             .map(Method::getName)
                             .map(s -> s.replaceAll("^get", ""))
                             .map(this::decapitalize)
-                            .ifPresent(throwableConsumer(s -> jsonContent.put(s, method.invoke(info))))));
+                            .ifPresent(throwableConsumer(s -> {
+                                Object value = method.invoke(info);
+                                jsonContent.put(s, value);
+                            }))));
         }
 
         Collection<String> workflowVariables = getWorkflowVariables();
