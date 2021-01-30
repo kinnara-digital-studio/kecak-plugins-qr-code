@@ -3,7 +3,6 @@ package com.kinnara.kecakplugins.qrcode;
 import com.google.zxing.WriterException;
 import com.kinnara.kecakplugins.qrcode.exception.RestApiException;
 import com.kinnara.kecakplugins.qrcode.util.QrGenerator;
-import com.kinnara.kecakplugins.qrcode.util.Unclutter;
 import org.joget.apps.app.dao.UserviewDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.UserviewDefinition;
@@ -26,7 +25,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
-public class QrCodeMenu extends UserviewMenu implements PluginWebSupport, QrGenerator, Unclutter {
+public class QrCodeMenu extends UserviewMenu implements PluginWebSupport, QrGenerator {
     @Override
     public String getCategory() {
         return "Kecak";
@@ -96,7 +95,7 @@ public class QrCodeMenu extends UserviewMenu implements PluginWebSupport, QrGene
             try {
                 httpServletResponse.setContentType("image/png");
                 OutputStream outputStream = httpServletResponse.getOutputStream();
-                writeQrCodeMenuToStream(menu, outputStream);
+                writeQrCodeMenuToUserviewMenu(menu, outputStream);
             } catch (WriterException e) {
                 throw new RestApiException(e);
             }

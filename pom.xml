@@ -120,6 +120,11 @@
             <artifactId>servlet-api</artifactId>
             <version>3.0-alpha-1</version>
         </dependency>
+        <dependency>
+            <groupId>com.kinnarastudio</groupId>
+            <artifactId>kinnara-commons</artifactId>
+            <version>1.2.0</version>
+        </dependency>
         <!-- End change plugin secific dependencies here -->
     </dependencies>
 </project>

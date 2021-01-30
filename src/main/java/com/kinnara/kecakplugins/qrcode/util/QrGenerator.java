@@ -20,7 +20,7 @@ public interface QrGenerator {
      * @throws IOException
      * @throws WriterException
      */
-    default void writeQrCodeMenuToStream(@Nonnull UserviewMenu menu, final OutputStream outputStream) throws IOException, WriterException {
+    default void writeQrCodeMenuToUserviewMenu(@Nonnull UserviewMenu menu, final OutputStream outputStream) throws IOException, WriterException {
         String content = AppUtil.processHashVariable(menu.getPropertyString("content"), null, null, null);
         int width = Integer.parseInt(menu.getPropertyString("width"));
         int height = Integer.parseInt(menu.getPropertyString("height"));

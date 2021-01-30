@@ -1,0 +1,38 @@
+[
+  {
+    "title": "@@qrCode.qrCodeMenu@@",
+    "properties": [
+      {
+        "name" : "id",
+        "label" : "@@qrCode.id@@",
+        "type" : "hidden"
+      },
+      {
+        "name": "content",
+        "label": "@@qrCode.content@@",
+        "type": "textarea",
+        "required": "true"
+      }
+    ]
+  },
+  {
+    "title": "@@qrCode.ui@@",
+    "properties": [
+      {
+        "name": "height",
+        "label": "@@qrCode.height@@",
+        "type": "textfield",
+        "value" : "350",
+        "required": "true"
+      },
+      {
+        "name": "width",
+        "label": "@@qrCode.width@@",
+        "type": "textfield",
+        "value" : "350",
+        "required": "true"
+      }
+    ]
+  }
+
+]

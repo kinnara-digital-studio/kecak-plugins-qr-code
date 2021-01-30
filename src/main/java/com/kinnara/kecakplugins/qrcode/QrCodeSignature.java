@@ -3,8 +3,9 @@ package com.kinnara.kecakplugins.qrcode;
 import com.google.zxing.WriterException;
 import com.kinnara.kecakplugins.qrcode.exception.RestApiException;
 import com.kinnara.kecakplugins.qrcode.util.QrGenerator;
-import com.kinnara.kecakplugins.qrcode.util.Unclutter;
-import org.joda.time.DateTime;
+import com.kinnarastudio.commons.Try;
+import com.kinnarastudio.commons.jsonstream.JSONCollectors;
+import com.kinnarastudio.commons.jsonstream.JSONStream;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.PluginDefaultProperties;
 import org.joget.apps.app.service.AppUtil;
@@ -37,7 +38,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class QrCodeSignature extends DefaultApplicationPlugin implements PluginWebSupport, QrGenerator, Unclutter {
+public class QrCodeSignature extends DefaultApplicationPlugin implements PluginWebSupport, QrGenerator {
     private final static DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     @Override
@@ -68,22 +69,22 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
     @Override
     public String getPropertyOptions() {
         JSONArray jsonActivityOptionsProperties = getGetterMethods(WorkflowActivity.class).stream()
-                .map(throwableFunction(s -> {
+                .map(Try.onFunction(s -> {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("value", s);
                     jsonObject.put("label", decapitalize(s.replaceAll("^get", "")));
                     return jsonObject;
                 }))
-                .collect(JSONArray::new, JSONArray::put, (result, src) -> jsonStream(src).forEach(throwableConsumer(result::put)));
+                .collect(JSONCollectors.toJSONArray());
 
         JSONArray jsonWorkflowVariables = getWorkflowVariables(AppUtil.getCurrentAppDefinition()).stream()
-                .map(throwableFunction(v -> {
+                .map(Try.onFunction(v -> {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("value", v);
                     jsonObject.put("label", v);
                     return jsonObject;
                 }))
-                .collect(JSONArray::new, JSONArray::put, (result, src) -> jsonStream(src).forEach(throwableConsumer(result::put)));
+                .collect(JSONCollectors.toJSONArray());
 
         String[] args = new String[] {
                 jsonActivityOptionsProperties.toString().replaceAll("\"", "'"),
@@ -175,7 +176,7 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
                 .map(s -> s.split(";"))
                 .map(Arrays::stream)
                 .orElseGet(Stream::empty)
-                .filter(this::isNotEmpty)
+                .filter(s -> !s.isEmpty())
                 .map(s -> AppUtil.processHashVariable(s, null, null, null))
                 .collect(Collectors.toList());
     }
@@ -187,7 +188,7 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
      * @param response
      * @throws RestApiException
      */
-    private void generateQr(@Nonnull final HttpServletRequest request, @Nonnull final HttpServletResponse response) throws RestApiException {
+    protected void generateQr(@Nonnull final HttpServletRequest request, @Nonnull final HttpServletResponse response) throws RestApiException {
         AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
         ApplicationContext applicationContext = AppUtil.getApplicationContext();
         WorkflowManager workflowManager = (WorkflowManager) applicationContext.getBean("workflowManager");
@@ -213,13 +214,13 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
             getActivityProperties()
                     .stream()
                     .filter(Objects::nonNull)
-                    .map(throwableFunction(s -> info.getClass().getMethod(s)))
+                    .map(Try.onFunction(s -> info.getClass().getMethod(s)))
                     .filter(Objects::nonNull)
-                    .forEach(throwableConsumer(method -> Optional.of(method)
+                    .forEach(Try.onConsumer(method -> Optional.of(method)
                             .map(Method::getName)
                             .map(s -> s.replaceAll("^get", ""))
                             .map(this::decapitalize)
-                            .ifPresent(throwableConsumer(s -> {
+                            .ifPresent(Try.onConsumer(s -> {
                                 Object value = method.invoke(info);
                                 jsonContent.put(s, value);
                             }))));
@@ -234,7 +235,7 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
                         .map(WorkflowVariable::getName)
                         .map(workflowVariables::contains)
                         .orElse(false))
-                .forEach(throwableConsumer(v -> jsonContent.put(v.getName(), v.getVal())));
+                .forEach(Try.onConsumer(v -> jsonContent.put(v.getName(), v.getVal())));
 
         try {
             String content = host + "/web/json/app/" + appId + "/" + appVersion + "/plugin/" + QrCodeSignature.class.getName() + "/service?action=verify&data=" + URLEncoder.encode(SecurityUtil.encrypt(jsonContent.toString()), "UTF-8");
@@ -255,7 +256,7 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
     private void verifyQr(@Nonnull final HttpServletRequest request, @Nonnull final HttpServletResponse response) throws RestApiException {
         String data = SecurityUtil.decrypt(getRequiredParameter(request, "data"));
         JSONObject jsonContent = Optional.of(data)
-                .map(throwableFunction(JSONObject::new))
+                .map(Try.onFunction(JSONObject::new))
                 .orElseThrow(() -> new RestApiException(HttpServletResponse.SC_BAD_REQUEST, "Unable to verify data ["+data+"]"));
 
         try {
@@ -264,8 +265,8 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
                 response.setContentType("application/json");
                 response.getWriter().write(jsonContent.toString());
             } else {
-                String parameterData = jsonStream(jsonContent)
-                        .map(throwableFunction(key -> String.format("%s=%s", key, URLEncoder.encode(jsonContent.getString(key), "UTF-8"))))
+                String parameterData = JSONStream.of(jsonContent, JSONObject::optString)
+                        .map(Try.onFunction(entry -> String.format("%s=%s", entry.getKey(), URLEncoder.encode(entry.getValue(), "UTF-8"))))
                         .collect(Collectors.joining("&"));
 
                 final Pattern p = Pattern.compile("https?://.+\\?.+=,*");
@@ -302,7 +303,7 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
                 .map(s -> s.split(";"))
                 .map(Arrays::stream)
                 .orElseGet(Stream::empty)
-                .filter(this::isNotEmpty)
+                .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());
     }
 
@@ -314,12 +315,12 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
      */
     private Set<String> getGetterMethods(Class cls) {
         return Optional.of(cls.getName())
-                .map(throwableFunction(Class::forName))
+                .map(Try.onFunction(Class::forName))
                 .map(Class::getMethods)
                 .map(Arrays::stream)
                 .orElseGet(Stream::empty)
                 .filter(m -> m.getParameterCount() == 0)
-                .map(throwableFunction(Method::getName))
+                .map(Try.onFunction(Method::getName))
                 .filter(s -> s.startsWith("get"))
                 .collect(Collectors.toSet());
     }
