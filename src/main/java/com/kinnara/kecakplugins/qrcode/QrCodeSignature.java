@@ -254,7 +254,8 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
      * @throws RestApiException
      */
     private void verifyQr(@Nonnull final HttpServletRequest request, @Nonnull final HttpServletResponse response) throws RestApiException {
-        String data = SecurityUtil.decrypt(getRequiredParameter(request, "data"));
+        String encrypted = getRequiredParameter(request, "data");
+        String data = SecurityUtil.decrypt(encrypted);
         JSONObject jsonContent = Optional.of(data)
                 .map(Try.onFunction(JSONObject::new))
                 .orElseThrow(() -> new RestApiException(HttpServletResponse.SC_BAD_REQUEST, "Unable to verify data ["+data+"]"));
