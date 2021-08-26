@@ -23,6 +23,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+/**
+ * @author aristo
+ *
+ * QR Code Webservice
+ *
+ * @see <a href="https://gitlab.com/kinnarastudio/kecak-plugins-qr-code/-/wikis/QR-Code-Webservice">QR Code Webservice</>
+ */
 public class QrCodeWebService extends DefaultApplicationPlugin implements PluginWebSupport, QrGenerator {
     @Override
     public String getName() {

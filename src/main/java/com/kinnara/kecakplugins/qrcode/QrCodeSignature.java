@@ -38,6 +38,13 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * @author aristo
+ *
+ * QR Code Signature Web Service
+ *
+ * @see <a href="https://gitlab.com/kinnarastudio/kecak-plugins-qr-code/-/wikis/QR-Code-Signature">QR Code Signature</a>
+ */
 public class QrCodeSignature extends DefaultApplicationPlugin implements PluginWebSupport, QrGenerator {
     private final static DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 

@@ -25,6 +25,11 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * @author aristo
+ *
+ * @see <a href="https://gitlab.com/kinnarastudio/kecak-plugins-qr-code/-/wikis/QR-Code-Menu">QR Code Menu</a>
+ */
 public class QrCodeMenu extends UserviewMenu implements PluginWebSupport, QrGenerator {
     @Override
     public String getCategory() {

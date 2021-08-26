@@ -5,6 +5,11 @@ import org.joget.apps.form.model.FormData;
 
 import java.util.Map;
 
+/**
+ * @author aristo
+ *
+ * Not yet implemented
+ */
 public class QrCodeElement extends Element {
     @Override
     public String renderTemplate(FormData formData, Map map) {
