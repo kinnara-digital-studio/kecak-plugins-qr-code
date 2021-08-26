@@ -12,6 +12,11 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author aristo
+ *
+ * Not yet implemented
+ */
 public class QrCodeSignatureVerificationHashVariable extends DefaultHashVariablePlugin {
     @Override
     public String getPrefix() {

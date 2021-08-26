@@ -1,17 +1,11 @@
 package com.kinnara.kecakplugins.qrcode;
 
-import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 import com.kinnara.kecakplugins.qrcode.util.QrGenerator;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.app.service.AuthTokenService;
 import org.joget.apps.userview.model.UserviewMenu;
 import org.joget.commons.util.LogUtil;
-import org.joget.directory.model.User;
-import org.joget.directory.model.service.DirectoryManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +15,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 
+/**
+ * @author aristo
+ *
+ * @see <a href="https://gitlab.com/kinnarastudio/kecak-plugins-qr-code/-/wikis/Auth-Token-QR">Auth Token QR</a>
+ */
 public class AuthTokenQrCodeMenu extends UserviewMenu implements QrGenerator {
     @Override
     public String getCategory() {
