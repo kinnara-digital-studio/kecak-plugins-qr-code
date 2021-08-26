@@ -20,6 +20,16 @@
         "type": "header"
       },
       {
+        "name" : "isEmbedData",
+        "label" : "Is Embed Data in QR",
+        "type" : "checkbox",
+        "value" : "false",
+        "options" : [{
+            "value" : "true",
+            "label" : ""
+        }]
+      },
+      {
         "name": "activityProperties",
         "label": "Activity Properties",
         "type": "multiselect",

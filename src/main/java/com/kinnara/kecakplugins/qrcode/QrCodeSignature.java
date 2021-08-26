@@ -102,10 +102,17 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
             if("verify".equals(action)) {
                 verifyQr(request, response);
             }
-
             // generate QR
             else {
-                generateQr(request, response);
+            	//is embed data
+            	String isEmbedData = getIsEmbedData();
+            	LogUtil.info(getClassName(), "IS EMBED DATA "+isEmbedData);
+            	if(isEmbedData!=null && isEmbedData.equals("true")) {
+            		generateQr(request, response);
+            	}else {
+            		generateQrByURLOnly(request, response);
+            	}
+                
             }
 
         } catch (RestApiException e) {
@@ -114,7 +121,7 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
         }
     }
 
-    private String getRequiredParameter(HttpServletRequest request, String parameterName) throws RestApiException {
+	private String getRequiredParameter(HttpServletRequest request, String parameterName) throws RestApiException {
         return Optional.of(parameterName)
                 .map(request::getParameter)
                 .orElseThrow(() -> new RestApiException(HttpServletResponse.SC_BAD_REQUEST, "Parameter ["+parameterName+" is not supplied]"));
@@ -161,6 +168,15 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
                 .map(String::valueOf)
                 .map(s -> AppUtil.processHashVariable(s, null, null, null))
                 .orElseThrow(() -> new RestApiException(HttpServletResponse.SC_FORBIDDEN, "Missing verificationUrl configuration"));
+    }
+    
+    @Nonnull
+    private String getIsEmbedData() throws RestApiException {
+    	return Optional.of("isEmbedData")
+                .map(getConfiguration()::get)
+                .map(String::valueOf)
+                .map(s -> AppUtil.processHashVariable(s, null, null, null))
+                .orElseThrow(() -> new RestApiException(HttpServletResponse.SC_FORBIDDEN, "Missing isEmbedData configuration"));
     }
 
     /**
@@ -245,6 +261,33 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
             throw new RestApiException(e);
         }
     }
+    
+    /**
+     * Generate QR Code By URL Only
+     * Generate QR Code Based on URL with activityId param
+     * @param request
+     * @param response
+     * @throws RestApiException
+     */
+    private void generateQrByURLOnly(HttpServletRequest request, HttpServletResponse response) throws RestApiException {
+        int width = Integer.parseInt(getOptionalParameter(request, "width", "256"));
+        int height = Integer.parseInt(getOptionalParameter(request, "height", "256"));
+
+        JSONObject jsonContent = new JSONObject();
+        try {
+            jsonContent.put("qrTimestamp", new Date());
+        } catch (JSONException e) {
+            LogUtil.error(getClassName(), e, e.getMessage());
+        }
+
+        try {
+            String content = getVerificationUrl().replaceAll("\\$", "");
+            response.setContentType("image/png");
+            writeQrCodeToStream(content, width, height, response.getOutputStream());
+        } catch (WriterException | IOException e) {
+            throw new RestApiException(e);
+        }
+	}
 
     /**
      * Verify QR Code
