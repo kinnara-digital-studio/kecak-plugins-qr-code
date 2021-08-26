@@ -280,6 +280,7 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
         int width = Integer.parseInt(getOptionalParameter(request, "width", "256"));
         int height = Integer.parseInt(getOptionalParameter(request, "height", "256"));
 
+        String activityId = getRequiredParameter(request, "activityId");
         JSONObject jsonContent = new JSONObject();
         try {
             jsonContent.put("qrTimestamp", new Date());
@@ -289,6 +290,7 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
 
         try {
             String content = getVerificationUrl().replaceAll("\\$", "");
+            content += "?activityId="+activityId;
             response.setContentType("image/png");
             writeQrCodeToStream(content, width, height, response.getOutputStream());
         } catch (WriterException | IOException e) {
