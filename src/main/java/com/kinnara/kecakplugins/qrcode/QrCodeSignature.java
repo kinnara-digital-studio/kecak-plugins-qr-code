@@ -113,7 +113,7 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
             else {
             	//is embed data
             	String isEmbedData = getIsEmbedData();
-            	LogUtil.info(getClassName(), "IS EMBED DATA "+isEmbedData);
+//            	LogUtil.info(getClassName(), "IS EMBED DATA "+isEmbedData);
             	if(isEmbedData!=null && isEmbedData.equals("true")) {
             		generateQr(request, response);
             	}else {
@@ -280,17 +280,16 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
         int width = Integer.parseInt(getOptionalParameter(request, "width", "256"));
         int height = Integer.parseInt(getOptionalParameter(request, "height", "256"));
 
+        ApplicationContext applicationContext = AppUtil.getApplicationContext();
+        WorkflowManager workflowManager = (WorkflowManager) applicationContext.getBean("workflowManager");
+        
         String activityId = getRequiredParameter(request, "activityId");
-        JSONObject jsonContent = new JSONObject();
-        try {
-            jsonContent.put("qrTimestamp", new Date());
-        } catch (JSONException e) {
-            LogUtil.error(getClassName(), e, e.getMessage());
-        }
+        WorkflowActivity info = workflowManager.getRunningActivityInfo(activityId);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
         try {
-            String content = getVerificationUrl().replaceAll("\\$", "");
-            content += "?activityId="+activityId;
+            String content = getVerificationUrl().replaceAll("\\$", "")+"?";
+            content +="activityId="+activityId; 
             response.setContentType("image/png");
             writeQrCodeToStream(content, width, height, response.getOutputStream());
         } catch (WriterException | IOException e) {
