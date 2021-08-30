@@ -112,9 +112,10 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
             // generate QR
             else {
             	//is embed data
-            	String isEmbedData = getIsEmbedData();
+            	boolean isEmbedData = isEmbedData();
             	LogUtil.info(getClassName(), "IS EMBED DATA "+isEmbedData);
-            	if(isEmbedData!=null && isEmbedData.equals("true")) {
+
+            	if(isEmbedData) {
             		generateQr(request, response);
             	}else {
             		generateQrByURLOnly(request, response);
@@ -178,12 +179,13 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
     }
     
     @Nonnull
-    private String getIsEmbedData() throws RestApiException {
+    private boolean isEmbedData() throws RestApiException {
     	return Optional.of("isEmbedData")
                 .map(getConfiguration()::get)
                 .map(String::valueOf)
                 .map(s -> AppUtil.processHashVariable(s, null, null, null))
-                .orElseThrow(() -> new RestApiException(HttpServletResponse.SC_FORBIDDEN, "Missing isEmbedData configuration"));
+                .map("true"::equalsIgnoreCase)
+                .orElse(true);
     }
 
     /**
