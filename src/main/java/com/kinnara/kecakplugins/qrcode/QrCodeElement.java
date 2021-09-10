@@ -21,10 +21,8 @@ import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
 
@@ -50,19 +48,6 @@ public class QrCodeElement extends Element implements FormBuilderPaletteElement,
         }
 
         dataModel.put("primaryKey", formData.getPrimaryKeyValue());
-
-        try(ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            int height = Integer.parseInt(getPropertyString("height"));
-            int width = Integer.parseInt(getPropertyString("width"));
-            writeQrCodeToStream(AppUtil.processHashVariable(getPropertyString("content"), null, null, null), width, height, outputStream);
-            byte[] encoded = Base64.getEncoder().encode(outputStream.toByteArray());
-            String src = "'data:image/png;base64," + new String(encoded);
-            dataModel.put("src", src);
-        } catch (WriterException | IOException e) {
-            LogUtil.error(getClassName(), e, e.getMessage());
-        }
-
-
 
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
         return html;
