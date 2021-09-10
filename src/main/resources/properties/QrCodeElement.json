@@ -1,0 +1,51 @@
+[
+  {
+    "title": "@@qrCode.qrCodeElement@@",
+    "properties": [
+      {
+        "name" : "id",
+        "label" : "@@qrCode.id@@",
+        "type": "textfield",
+        "required": "true"
+      },
+      {
+        "name" : "label",
+        "label" : "@@qrCode.label@@",
+        "type" : "textfield",
+        "required" : "true",
+        "value" : "@@qrCode.label.qrCode@@"
+      },
+      {
+        "name": "readonly",
+        "value": "true",
+        "type": "hidden"
+      },
+      {
+        "name": "content",
+        "label": "@@qrCode.content@@",
+        "type": "textarea",
+        "required": "true"
+      }
+    ]
+  },
+  {
+    "title": "@@qrCode.ui@@",
+    "properties": [
+      {
+        "name": "height",
+        "label": "@@qrCode.height@@",
+        "type": "textfield",
+        "value" : "160",
+        "required": "true"
+      },
+      {
+        "name": "width",
+        "label": "@@qrCode.width@@",
+        "type": "textfield",
+        "value" : "160",
+        "required": "true"
+      }
+    ]
+  }
+
+]

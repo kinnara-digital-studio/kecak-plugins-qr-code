@@ -18,6 +18,7 @@ public class Activator implements BundleActivator {
         registrationList.add(context.registerService(QrCodeMenu.class.getName(), new QrCodeMenu(), null));
         registrationList.add(context.registerService(QrCodeSignature.class.getName(), new QrCodeSignature(), null));
         registrationList.add(context.registerService(QrCodeWebService.class.getName(), new QrCodeWebService(), null));
+        registrationList.add(context.registerService(QrCodeElement.class.getName(), new QrCodeElement(), null));
 //        registrationList.add(context.registerService(QrCodeSignatureVerificationHashVariable.class.getName(), new QrCodeSignatureVerificationHashVariable(), null));
     }
 

@@ -6,6 +6,8 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import org.joget.apps.app.service.AppUtil;
+import org.joget.apps.form.model.Element;
+import org.joget.apps.form.model.FormData;
 import org.joget.apps.userview.model.UserviewMenu;
 
 import javax.annotation.Nonnull;
@@ -14,7 +16,7 @@ import java.io.OutputStream;
 
 public interface QrGenerator {
     /**
-     * Generate
+     * Generate QR code for userview menu
      * @param menu
      * @param outputStream
      * @throws IOException
@@ -24,6 +26,21 @@ public interface QrGenerator {
         String content = AppUtil.processHashVariable(menu.getPropertyString("content"), null, null, null);
         int width = Integer.parseInt(menu.getPropertyString("width"));
         int height = Integer.parseInt(menu.getPropertyString("height"));
+        writeQrCodeToStream(content, width, height, outputStream);
+    }
+
+    /**
+     * Generate QR code for form element
+     *
+     * @param element
+     * @param outputStream
+     * @throws IOException
+     * @throws WriterException
+     */
+    default void writeQrCodeToFormElement(Element element, final OutputStream outputStream) throws IOException, WriterException {
+        String content = AppUtil.processHashVariable(element.getPropertyString("content"), null, null, null);
+        int width = Integer.parseInt(element.getPropertyString("width"));
+        int height = Integer.parseInt(element.getPropertyString("height"));
         writeQrCodeToStream(content, width, height, outputStream);
     }
 
