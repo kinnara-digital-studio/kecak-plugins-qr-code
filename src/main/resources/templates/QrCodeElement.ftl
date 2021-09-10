@@ -14,5 +14,8 @@
         <label class="label">${element.properties.label}</label>
         <br>
         <img src="${request.contextPath}/web/json/app/${appId}/${appVersion}/plugin/${className}/service?form=${formDefId}&field=${element.properties.id!}" width="${element.properties.width!320}" height="${element.properties.height!320}" />
+        <#if element.properties.showQrContent! == 'true'>
+            <b>${element.properties.content!}</b>
+        </#if>
     </#if>
 </div>

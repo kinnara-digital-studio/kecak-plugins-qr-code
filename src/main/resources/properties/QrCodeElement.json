@@ -32,6 +32,18 @@
     "title": "@@qrCode.ui@@",
     "properties": [
       {
+        "name": "showQrContent",
+        "label": "@@qrCode.showQrContent@@",
+        "type": "checkbox",
+        "value": "",
+        "options": [
+          {
+            "value": "true",
+            "label": ""
+          }
+        ]
+      },
+      {
         "name": "height",
         "label": "@@qrCode.height@@",
         "type": "textfield",
