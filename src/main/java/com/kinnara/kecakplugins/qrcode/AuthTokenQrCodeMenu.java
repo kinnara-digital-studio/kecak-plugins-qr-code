@@ -39,12 +39,10 @@ public class AuthTokenQrCodeMenu extends UserviewMenu implements QrGenerator {
         String hostUrl = AppUtil.processHashVariable(getPropertyString("hostUrl"), null, null, null);
         String username = getPropertyCurrentUser() ? WorkflowUtil.getCurrentUsername() : AppUtil.processHashVariable(getPropertyString("username"), null, null, null);
 
-        try {
+        try(ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             JSONObject jsonContent = new JSONObject();
             jsonContent.put("host", hostUrl);
             jsonContent.put("token", authTokenService.generateToken(username));
-
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
             int width = Integer.parseInt(getPropertyString("width"));
             int height = Integer.parseInt(getPropertyString("height"));
