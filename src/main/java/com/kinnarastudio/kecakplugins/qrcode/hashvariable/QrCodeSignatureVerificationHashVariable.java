@@ -1,14 +1,17 @@
-package com.kinnara.kecakplugins.qrcode;
+package com.kinnarastudio.kecakplugins.qrcode.hashvariable;
 
 import com.kinnarastudio.commons.Try;
 import org.joget.apps.app.model.DefaultHashVariablePlugin;
+import org.joget.apps.app.service.AppUtil;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.SecurityUtil;
+import org.joget.plugin.base.PluginManager;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,7 +59,10 @@ public class QrCodeSignatureVerificationHashVariable extends DefaultHashVariable
 
     @Override
     public String getVersion() {
-        return getClass().getPackage().getImplementationVersion();
+        PluginManager pluginManager = (PluginManager) AppUtil.getApplicationContext().getBean("pluginManager");
+        ResourceBundle resourceBundle = pluginManager.getPluginMessageBundle(getClassName(), "/messages/BuildNumber");
+        String buildNumber = resourceBundle.getString("buildNumber");
+        return buildNumber;
     }
 
     @Override

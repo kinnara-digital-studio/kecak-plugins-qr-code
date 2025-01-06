@@ -1,8 +1,8 @@
-package com.kinnara.kecakplugins.qrcode;
+package com.kinnarastudio.kecakplugins.qrcode.form;
 
 import com.google.zxing.WriterException;
-import com.kinnara.kecakplugins.qrcode.exception.RestApiException;
-import com.kinnara.kecakplugins.qrcode.util.QrGenerator;
+import com.kinnarastudio.kecakplugins.qrcode.exception.RestApiException;
+import com.kinnarastudio.kecakplugins.qrcode.util.QrGenerator;
 import org.joget.apps.app.dao.FormDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.FormDefinition;
@@ -14,6 +14,7 @@ import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.LogUtil;
+import org.joget.plugin.base.PluginManager;
 import org.joget.plugin.base.PluginWebSupport;
 import org.springframework.context.ApplicationContext;
 
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 /**
  * @author aristo
@@ -60,7 +62,10 @@ public class QrCodeElement extends Element implements FormBuilderPaletteElement,
 
     @Override
     public String getVersion() {
-        return getClass().getPackage().getImplementationVersion();
+        PluginManager pluginManager = (PluginManager) AppUtil.getApplicationContext().getBean("pluginManager");
+        ResourceBundle resourceBundle = pluginManager.getPluginMessageBundle(getClassName(), "/messages/BuildNumber");
+        String buildNumber = resourceBundle.getString("buildNumber");
+        return buildNumber;
     }
 
     @Override

@@ -1,7 +1,14 @@
-package com.kinnara.kecakplugins.qrcode;
+package com.kinnarastudio.kecakplugins.qrcode;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import com.kinnarastudio.kecakplugins.qrcode.form.QrCodeElement;
+import com.kinnarastudio.kecakplugins.qrcode.form.QrScannerElement;
+import com.kinnarastudio.kecakplugins.qrcode.userview.AuthTokenQrCodeMenu;
+import com.kinnarastudio.kecakplugins.qrcode.userview.QrCodeMenu;
+import com.kinnarastudio.kecakplugins.qrcode.webservice.QrCodeSignature;
+import com.kinnarastudio.kecakplugins.qrcode.webservice.QrCodeWebService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

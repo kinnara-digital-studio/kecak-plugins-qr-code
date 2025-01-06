@@ -1,9 +1,10 @@
-package com.kinnara.kecakplugins.qrcode;
+package com.kinnarastudio.kecakplugins.qrcode.userview;
 
 import com.google.zxing.WriterException;
-import com.kinnara.kecakplugins.qrcode.util.QrGenerator;
+import com.kinnarastudio.kecakplugins.qrcode.util.QrGenerator;
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.app.service.AuthTokenService;
+import org.joget.plugin.base.PluginManager;
+import org.kecak.apps.app.service.AuthTokenService;
 import org.joget.apps.userview.model.UserviewMenu;
 import org.joget.commons.util.LogUtil;
 import org.joget.workflow.util.WorkflowUtil;
@@ -14,6 +15,7 @@ import org.springframework.context.ApplicationContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.ResourceBundle;
 
 /**
  * @author aristo
@@ -78,7 +80,10 @@ public class AuthTokenQrCodeMenu extends UserviewMenu implements QrGenerator {
 
     @Override
     public String getVersion() {
-        return getClass().getPackage().getImplementationVersion();
+        PluginManager pluginManager = (PluginManager) AppUtil.getApplicationContext().getBean("pluginManager");
+        ResourceBundle resourceBundle = pluginManager.getPluginMessageBundle(getClassName(), "/messages/BuildNumber");
+        String buildNumber = resourceBundle.getString("buildNumber");
+        return buildNumber;
     }
 
     @Override

@@ -1,6 +1,10 @@
-package com.kinnara.kecakplugins.qrcode;
+package com.kinnarastudio.kecakplugins.qrcode.form;
 
+import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.lib.TextField;
+import org.joget.plugin.base.PluginManager;
+
+import java.util.ResourceBundle;
 
 public class QrScannerElement extends TextField {
     @Override
@@ -20,7 +24,10 @@ public class QrScannerElement extends TextField {
 
     @Override
     public String getVersion() {
-        return getClass().getPackage().getImplementationVersion();
+        PluginManager pluginManager = (PluginManager) AppUtil.getApplicationContext().getBean("pluginManager");
+        ResourceBundle resourceBundle = pluginManager.getPluginMessageBundle(getClassName(), "/messages/BuildNumber");
+        String buildNumber = resourceBundle.getString("buildNumber");
+        return buildNumber;
     }
 
     @Override

@@ -1,14 +1,15 @@
-package com.kinnara.kecakplugins.qrcode;
+package com.kinnarastudio.kecakplugins.qrcode.webservice;
 
 import com.google.zxing.WriterException;
-import com.kinnara.kecakplugins.qrcode.exception.RestApiException;
-import com.kinnara.kecakplugins.qrcode.util.QrGenerator;
+import com.kinnarastudio.kecakplugins.qrcode.exception.RestApiException;
+import com.kinnarastudio.kecakplugins.qrcode.util.QrGenerator;
 import com.kinnarastudio.commons.Try;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.PluginDefaultProperties;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.commons.util.LogUtil;
 import org.joget.plugin.base.DefaultApplicationPlugin;
+import org.joget.plugin.base.PluginManager;
 import org.joget.plugin.base.PluginWebSupport;
 import org.joget.plugin.property.service.PropertyUtil;
 
@@ -21,6 +22,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.stream.Stream;
 
 /**
@@ -38,7 +40,10 @@ public class QrCodeWebService extends DefaultApplicationPlugin implements Plugin
 
     @Override
     public String getVersion() {
-        return getClass().getPackage().getImplementationVersion();
+        PluginManager pluginManager = (PluginManager) AppUtil.getApplicationContext().getBean("pluginManager");
+        ResourceBundle resourceBundle = pluginManager.getPluginMessageBundle(getClassName(), "/messages/BuildNumber");
+        String buildNumber = resourceBundle.getString("buildNumber");
+        return buildNumber;
     }
 
     @Override

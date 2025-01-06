@@ -1,8 +1,8 @@
-package com.kinnara.kecakplugins.qrcode;
+package com.kinnarastudio.kecakplugins.qrcode.userview;
 
 import com.google.zxing.WriterException;
-import com.kinnara.kecakplugins.qrcode.exception.RestApiException;
-import com.kinnara.kecakplugins.qrcode.util.QrGenerator;
+import com.kinnarastudio.kecakplugins.qrcode.exception.RestApiException;
+import com.kinnarastudio.kecakplugins.qrcode.util.QrGenerator;
 import org.joget.apps.app.dao.UserviewDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.UserviewDefinition;
@@ -12,6 +12,7 @@ import org.joget.apps.userview.model.UserviewCategory;
 import org.joget.apps.userview.model.UserviewMenu;
 import org.joget.apps.userview.service.UserviewService;
 import org.joget.commons.util.LogUtil;
+import org.joget.plugin.base.PluginManager;
 import org.joget.plugin.base.PluginWebSupport;
 import org.springframework.context.ApplicationContext;
 
@@ -24,6 +25,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 /**
  * @author aristo
@@ -66,7 +68,10 @@ public class QrCodeMenu extends UserviewMenu implements PluginWebSupport, QrGene
 
     @Override
     public String getVersion() {
-        return getClass().getPackage().getImplementationVersion();
+        PluginManager pluginManager = (PluginManager) AppUtil.getApplicationContext().getBean("pluginManager");
+        ResourceBundle resourceBundle = pluginManager.getPluginMessageBundle(getClassName(), "/messages/BuildNumber");
+        String buildNumber = resourceBundle.getString("buildNumber");
+        return buildNumber;
     }
 
     @Override

@@ -1,8 +1,8 @@
-package com.kinnara.kecakplugins.qrcode;
+package com.kinnarastudio.kecakplugins.qrcode.webservice;
 
 import com.google.zxing.WriterException;
-import com.kinnara.kecakplugins.qrcode.exception.RestApiException;
-import com.kinnara.kecakplugins.qrcode.util.QrGenerator;
+import com.kinnarastudio.kecakplugins.qrcode.exception.RestApiException;
+import com.kinnarastudio.kecakplugins.qrcode.util.QrGenerator;
 import com.kinnarastudio.commons.Try;
 import com.kinnarastudio.commons.jsonstream.JSONCollectors;
 import com.kinnarastudio.commons.jsonstream.JSONStream;
@@ -12,6 +12,7 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.SecurityUtil;
 import org.joget.plugin.base.DefaultApplicationPlugin;
+import org.joget.plugin.base.PluginManager;
 import org.joget.plugin.base.PluginWebSupport;
 import org.joget.plugin.property.service.PropertyUtil;
 import org.joget.workflow.model.WorkflowActivity;
@@ -55,7 +56,10 @@ public class QrCodeSignature extends DefaultApplicationPlugin implements PluginW
 
     @Override
     public String getVersion() {
-        return getClass().getPackage().getImplementationVersion();
+        PluginManager pluginManager = (PluginManager) AppUtil.getApplicationContext().getBean("pluginManager");
+        ResourceBundle resourceBundle = pluginManager.getPluginMessageBundle(getClassName(), "/messages/BuildNumber");
+        String buildNumber = resourceBundle.getString("buildNumber");
+        return buildNumber;
     }
 
     @Override

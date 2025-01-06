@@ -1,4 +1,4 @@
-package com.kinnara.kecakplugins.qrcode.util;
+package com.kinnarastudio.kecakplugins.qrcode.util;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;

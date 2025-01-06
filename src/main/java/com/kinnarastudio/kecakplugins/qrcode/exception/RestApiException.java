@@ -1,4 +1,4 @@
-package com.kinnara.kecakplugins.qrcode.exception;
+package com.kinnarastudio.kecakplugins.qrcode.exception;
 
 import javax.servlet.http.HttpServletResponse;
 
