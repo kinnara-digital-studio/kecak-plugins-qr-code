@@ -39,6 +39,14 @@
         "label": "@@qrCode.content@@",
         "type": "textarea",
         "required": "true"
+      },
+      {
+        "name": "timeout",
+        "label": "@@qrCode.timeout@@",
+        "type": "textfield",
+        "required": "true",
+        "value": "5",
+        "regex_validation": "^[0-9]+$"
       }
     ]
   },

@@ -202,6 +202,10 @@ public class JwtQrCodeElement extends Element implements FormBuilderPaletteEleme
     }
 
     protected int getTimeout() {
-        return 5;
+        try {
+            return Integer.parseInt(getPropertyString("timeout"));
+        }catch (NumberFormatException e) {
+            return 5;
+        }
     }
 }
