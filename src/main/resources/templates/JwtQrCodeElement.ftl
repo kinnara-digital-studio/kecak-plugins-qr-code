@@ -16,7 +16,11 @@
         <div class="row">
 
             <div class="${element.properties.position}">
-                <img class="img-responsive center-block" src="${request.contextPath}/web/json/app/${appId}/${appVersion}/plugin/${className}/service?form=${formDefId}&field=${element.properties.id!}" width="${element.properties.width!320}" height="${element.properties.height!320}" />
+                <#if (element.properties.clickableQrCode!'') == 'true' >
+                    <a href="${link}"><img class="img-responsive center-block" src="data:image/png;base64,${base64EncodedImage!''}" width="${element.properties.width!320}" height="${element.properties.height!320}" /> </a>
+                <#else>
+                    <img class="img-responsive center-block" src="data:image/png;base64,${base64EncodedImage!''}" width="${element.properties.width!320}" height="${element.properties.height!320}" />
+                </#if>
                 <#if element.properties.showQrContent! == 'true'>
                     <b>${element.properties.content!}</b>
                 </#if>

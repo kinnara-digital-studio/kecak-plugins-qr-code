@@ -105,7 +105,7 @@ public class QrCodeElement extends Element implements FormBuilderPaletteElement,
 
     @Override
     public String getFormBuilderTemplate() {
-        return "<img src='${request.contextPath}/plugin/${className}/images/pdf-logo.png' width='320' height='320/>";
+        return "<img src='${request.contextPath}/plugin/${className}/images/qr-logo.png' width='320' height='320/>";
     }
 
     @Override

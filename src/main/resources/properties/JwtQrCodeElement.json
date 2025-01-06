@@ -1,0 +1,110 @@
+[
+  {
+    "title": "@@qrCode.jwtQrCodeElement@@",
+    "properties": [
+      {
+        "name" : "id",
+        "label" : "@@qrCode.id@@",
+        "type": "textfield",
+        "required": "true"
+      },
+      {
+        "name" : "label",
+        "label" : "@@qrCode.label@@",
+        "type" : "textfield",
+        "required" : "true",
+        "value" : "@@qrCode.label.qrCode@@"
+      },
+      {
+        "name": "readonly",
+        "value": "true",
+        "type": "hidden"
+      },
+      {
+        "name": "webContext",
+        "label": "@@qrCode.webContext@@",
+        "type": "textfield",
+        "required": "true",
+        "value": "https://sandbox.kecak.org"
+      },
+      {
+        "name": "contentType",
+        "label": "@@qrCode.contentType@@",
+        "type": "textfield",
+        "required": "true",
+        "value": "application/json"
+      },
+      {
+        "name": "content",
+        "label": "@@qrCode.content@@",
+        "type": "textarea",
+        "required": "true"
+      }
+    ]
+  },
+  {
+    "title": "@@qrCode.ui@@",
+    "properties": [
+      {
+        "name": "showQrContent",
+        "label": "@@qrCode.showQrContent@@",
+        "type": "checkbox",
+        "value": "",
+        "options": [
+          {
+            "value": "true",
+            "label": ""
+          }
+        ]
+      },
+      {
+        "name": "clickableQrCode",
+        "label": "@@qrCode.clickableQrCode@@",
+        "type": "checkbox",
+        "value": "",
+        "options": [
+          {
+            "value": "true",
+            "label": ""
+          }
+        ]
+      },
+      {
+        "name": "height",
+        "label": "@@qrCode.height@@",
+        "type": "textfield",
+        "value" : "160",
+        "required": "true"
+      },
+      {
+        "name": "width",
+        "label": "@@qrCode.width@@",
+        "type": "textfield",
+        "value" : "160",
+        "required": "true"
+      },
+      {
+        "name": "position",
+        "label": "Position",
+        "type": "radio",
+        "value": "center",
+        "required": "true",
+        "options": [
+          {
+            "value": "col-md-4",
+            "label": "Left"
+          },
+          {
+            "value": "col-md-4 col-md-offset-4",
+            "label": "Center"
+          },
+          {
+            "value": "col-md-4 col-md-offset-8",
+            "label": "Right"
+          }
+        ]
+      }
+    ]
+  }
+
+]

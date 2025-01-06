@@ -3,6 +3,7 @@ package com.kinnarastudio.kecakplugins.qrcode;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.kinnarastudio.kecakplugins.qrcode.form.JwtQrCodeElement;
 import com.kinnarastudio.kecakplugins.qrcode.form.QrCodeElement;
 import com.kinnarastudio.kecakplugins.qrcode.form.QrScannerElement;
 import com.kinnarastudio.kecakplugins.qrcode.userview.AuthTokenQrCodeMenu;
@@ -26,6 +27,7 @@ public class Activator implements BundleActivator {
         registrationList.add(context.registerService(QrCodeSignature.class.getName(), new QrCodeSignature(), null));
         registrationList.add(context.registerService(QrCodeWebService.class.getName(), new QrCodeWebService(), null));
         registrationList.add(context.registerService(QrCodeElement.class.getName(), new QrCodeElement(), null));
+        registrationList.add(context.registerService(JwtQrCodeElement.class.getName(), new JwtQrCodeElement(), null));
         registrationList.add(context.registerService(QrScannerElement.class.getName(), new QrScannerElement(), null));
 //        registrationList.add(context.registerService(QrCodeSignatureVerificationHashVariable.class.getName(), new QrCodeSignatureVerificationHashVariable(), null));
     }
